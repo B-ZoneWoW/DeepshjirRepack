@@ -88,49 +88,39 @@ public:
                    summons.Summon(summoned);
                 }
 
-		void UpdateAI(const uint32 uiDiff)
-		{
-			if (!UpdateVictim() || me->HasUnitState(UNIT_STAT_CASTING))
-				return;
+		void UpdateAI(const uint32 diff)
+        {
+            if (!UpdateVictim())
+                return;
 
-			// We use 2 different EventMaps for 2 Phases
-			if(burrowed)
-			{
-				burrowEvents.Update(uiDiff);
-			}else
-			{
-				events.Update(uiDiff);
+            events.Update(diff);
 
-				while (uint32 eventId = events.ExecuteEvent())
-				{
-					switch (eventId)
-					{
-					case EVENT_CRYSTAL_BARRAGE:
+            if (me->HasUnitState(UNIT_STAT_CASTING))
+                return;
 
-						if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
-							DoCast(pTarget, SPELL_CRYSTAL_BARRAGE);
+            while (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_CRYSTAL_BARRAGE:
+                        if (phase == 0)
+                        {
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true, 0))
+                            {
+                                DoCast(target, SPELL_CRYSTAL_BARRAGE, true);
 
-						events.ScheduleEvent(EVENT_CRYSTAL_BARRAGE,urand(15000,20000));
-						break;
-					case EVENT_DAMPENING_WAVE:
-						DoCastAOE(SPELL_DAMPENING_WAVE);
-
-						events.ScheduleEvent(EVENT_DAMPENING_WAVE,urand(10000,12000));
-						break;
-					case EVENT_BURROW:			
-						DoCast(me,SPELL_BURROW);
-
-						burrowEvents.Reset();
-						events.ScheduleEvent(EVENT_BURROW, 30000);
-						break;
-					}
-				}
-			}
-
-			DoMeleeAttackIfReady();
-		}
-	};
-};
+                                if (me->GetMap()->IsHeroic())
+                                    DoCast(target, SPELL_SUMMON_CRYSTAL_SHARD);
+                            }
+                            events.ScheduleEvent(EVENT_CRYSTAL_BARRAGE, urand(14000, 17000), 0, 0);
+                        }
+                        break;
+                        case EVENT_DAMPENING_WAVE:
+                        if (phase == 0)
+                        {
+                            me->CastSpell(me->getVictim(), SPELL_DAMPENING_WAVE, true);
+                            events.ScheduleEvent(EVENT_DAMPENING_WAVE, urand(10000, 11000), 0, 0);
+                        }
 
 void AddSC_boss_corborus()
 {
