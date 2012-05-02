@@ -71,12 +71,22 @@ public:
 
 		void EnterCombat(Unit* /*who*/)
 		{
-			events.ScheduleEvent(EVENT_CRYSTAL_BARRAGE,urand(7000,10000));
-			events.ScheduleEvent(EVENT_DAMPENING_WAVE,urand(5000,7000));
-			events.ScheduleEvent(EVENT_BURROW, 13000);
+      
+                        events.ScheduleEvent(EVENT_CRYSTAL_BARRAGE, urand(14000, 17000), 0, 0);
+                        events.ScheduleEvent(EVENT_DAMPENING_WAVE, urand(10000, 11000), 0, 0);
+                        events.ScheduleEvent(EVENT_BURROW, urand(30000, 40000), 0, 0);
+       
 
-			burrowed = false;
 		}
+               void JustDied(Unit* killer)
+                {
+                     summons.DespawnAll();
+                }
+
+               void JustSummoned(Creature* summoned)
+               {
+                   summons.Summon(summoned);
+                }
 
 		void UpdateAI(const uint32 uiDiff)
 		{
