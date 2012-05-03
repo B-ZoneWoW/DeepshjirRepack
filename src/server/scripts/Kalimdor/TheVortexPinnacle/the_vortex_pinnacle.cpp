@@ -60,6 +60,23 @@ enum eEvents
     EVENT_THUNDER_CRASH,
 };
 
+class npc_slipstream : public CreatureScript
+{
+public:
+    npc_slipstream() : CreatureScript("npc_slipstream") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_slipstreamAI (creature);
+    }
+    
+    struct npc_slipstreamAI : public ScriptedAI
+    {
+        npc_slipstreamAI(Creature* creature) : ScriptedAI(creature)
+        {
+            instance = creature->GetInstanceScript();
+        }
+
 void AddSC_The_vortex_pinnacle()
 {
     
