@@ -16,7 +16,7 @@
 */
 
 /**********
-* Script Coded by Naios
+* Script Coded by ((Naios & PaladMaster))
 * Script Complete 80% (or less)
 **********/
 
@@ -78,14 +78,15 @@ public:
 
 		void EnterCombat(Unit* /*who*/)
 		{
-			me->MonsterYell("Dat's what you get! Noting!", LANG_UNIVERSAL, NULL);
-
-			events.ScheduleEvent(EVENT_QUAKE, 13000);
-			events.ScheduleEvent(EVENT_CHAINS_OF_WOE, 17000);
-			events.ScheduleEvent(EVENT_WOUNDING_STRIKE, 7000);
-
+			DoCast(me, SPELL_CALL_FOR_HELP);
+            events.ScheduleEvent(EVENT_QUAKE, urand(40000, 60000), 0, 0);
+            events.ScheduleEvent(EVENT_WOUNDING_STRIKE, urand(2000, 4000), 0, 0);
 			DoCastAOE(SPELL_CALL_FOR_HELP);
 		}
+                void JustDied(Unit* killer)
+        {
+            summons.DespawnAll();
+        }
 
 		void UpdateAI(const uint32 diff)
 		{
