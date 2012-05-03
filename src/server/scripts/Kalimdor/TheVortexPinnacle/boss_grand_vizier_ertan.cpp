@@ -63,11 +63,16 @@ public:
 		EventMap events;
 		SummonList summons;
 		
-		void Reset()
-		{
-			events.Reset();
-			summons.DespawnAll();
-		}
+		void Reset() 
+                {
+            events.Reset();
+            summons.DespawnAll();
+            // reset vortexs
+            for(uint8 i = 0; i < 4; i++)
+			{
+				ertanVortex[i] = NULL;
+			}
+                }
 
 		void EnterCombat(Unit * /*who*/)
 		{
@@ -94,6 +99,14 @@ public:
 
 			EnterPhaseGround();
 		}
+            
+                void AttackStart(Unit* who)
+        {
+            if (!who)
+                return;
+            
+            AttackStartNoMove(who);
+        }
 
 		void JustSummoned(Creature* summon)
 		{
